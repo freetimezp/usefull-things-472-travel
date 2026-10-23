@@ -1,187 +1,249 @@
-/*==================== SHOW MENU ====================*/
-const navMenu = document.getElementById('nav-menu');
-const navToggle = document.getElementById('nav-toggle');
-const navClose = document.getElementById('nav-close');
+(() => {
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const loader = document.querySelector(".loader");
+    const site = document.querySelector(".site");
+    const progress = document.querySelector(".loader-progress");
+    const count = document.querySelector(".loader-count span");
+    const menuButton = document.querySelector(".menu-toggle");
+    const navLinks = document.querySelector(".nav-links");
 
-if(navToggle) {
-    navToggle.addEventListener('click', () => {
-        navMenu.classList.add('show-menu');
+    // Mobile navigation
+    menuButton.addEventListener("click", () => {
+        const open = navLinks.classList.toggle("open");
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuButton.querySelector("span").textContent = open ? "×" : "☰";
     });
-}
+    navLinks.querySelectorAll("a").forEach((link) =>
+        link.addEventListener("click", () => {
+            navLinks.classList.remove("open");
+            menuButton.setAttribute("aria-expanded", "false");
+            menuButton.querySelector("span").textContent = "☰";
+        }),
+    );
 
-if(navClose) {
-    navClose.addEventListener('click', () => {
-        navMenu.classList.remove('show-menu');
+    // Keep the experience usable if GSAP CDN is unavailable.
+    if (!window.gsap || reducedMotion) {
+        document.body.classList.remove("is-loading");
+        loader.remove();
+        site.style.opacity = "1";
+        return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    const loadState = { value: 0 };
+    gsap.to(loadState, {
+        value: 100,
+        duration: 2.1,
+        ease: "power2.inOut",
+        onUpdate: () => {
+            const n = Math.round(loadState.value);
+            progress.style.width = n + "%";
+            count.textContent = String(n).padStart(2, "0");
+        },
+        onComplete: () => {
+            const intro = gsap.timeline({
+                defaults: { ease: "power3.out" },
+                onComplete: () => {
+                    document.body.classList.remove("is-loading");
+                    loader.remove();
+                    ScrollTrigger.refresh();
+                },
+            });
+            intro
+                .to(".loader-inner", {
+                    y: -18,
+                    opacity: 0,
+                    duration: 0.35,
+                })
+                .to(".loader::before", { yPercent: -120, duration: 0.01 }, 0)
+                .to(
+                    loader,
+                    {
+                        clipPath: "inset(0 0 100% 0 round 0 0 45% 45%)",
+                        duration: 0.85,
+                        ease: "power4.inOut",
+                    },
+                    "-=.05",
+                )
+                .to(site, { opacity: 1, duration: 0.1 }, "<")
+                .from(".nav", { y: -22, opacity: 0, duration: 0.7 }, "-=.25")
+                .from(".eyebrow", { y: 18, opacity: 0, duration: 0.6 }, "-=.35")
+                .from(
+                    "h1 .line",
+                    { yPercent: 115, stagger: 0.13, duration: 0.9 },
+                    "-=.35",
+                )
+                .from(
+                    ".hero-description",
+                    { y: 18, opacity: 0, duration: 0.65 },
+                    "-=.5",
+                )
+                .from(
+                    ".hero-actions",
+                    { y: 15, opacity: 0, duration: 0.6 },
+                    "-=.45",
+                )
+                .from(
+                    ".plane-wrap",
+                    {
+                        x: 130,
+                        y: 70,
+                        rotation: -18,
+                        scale: 0.65,
+                        opacity: 0,
+                        duration: 1.4,
+                        ease: "power3.out",
+                    },
+                    "-=1.1",
+                )
+                .from(
+                    ".sun",
+                    {
+                        scale: 0.4,
+                        rotation: -35,
+                        opacity: 0,
+                        duration: 1,
+                    },
+                    "-=1.2",
+                )
+                .from(
+                    ".balloon",
+                    {
+                        y: 70,
+                        opacity: 0,
+                        stagger: 0.16,
+                        duration: 1.1,
+                    },
+                    "-=1",
+                )
+                .from(
+                    ".cloud",
+                    {
+                        x: (i) => (i % 2 ? 65 : -65),
+                        opacity: 0,
+                        stagger: 0.12,
+                        duration: 1,
+                    },
+                    "-=1",
+                )
+                .from(
+                    ".mountains",
+                    { yPercent: 18, opacity: 0, duration: 1.1 },
+                    "-=1.1",
+                )
+                .from(
+                    ".scroll-cue, .bottom-label",
+                    {
+                        opacity: 0,
+                        y: 10,
+                        stagger: 0.1,
+                        duration: 0.6,
+                    },
+                    "-=.5",
+                );
+        },
     });
-}
-/*==================== REMOVE MENU MOBILE ====================*/
-const navLink = document.querySelectorAll('.nav__link');
 
-function linkAction() {
-    const navMenu = document.getElementById('nav-menu');
-    navMenu.classList.remove('show-menu');
-}
-
-navLink.forEach(n => n.addEventListener('click', linkAction));
-
-/*==================== CHANGE BACKGROUND HEADER ====================*/
-function scrollHeader() {
-    const header = document.getElementById('header');
-
-    if(this.scrollY >= 100) {
-        header.classList.add('scroll-header');
-    }else{
-        header.classList.remove('scroll-header');
-    }
-}
-window.addEventListener('scroll', scrollHeader);
-
-/*==================== SWIPER DISCOVER ====================*/
-let swiper = new Swiper(".discover__container", {
-    effect: "coverflow",
-    grabCursor: true,
-    centeredSlides: true,
-    slidesPerView: "auto",
-    loop: true,
-    spaceBetween: 12,
-    coverflowEffect: {
-        rotate: 0,
-    },
-});
-
-/*==================== VIDEO ====================*/
-const videoFile = document.getElementById('video-file');
-const videoButton = document.getElementById('video-button');
-const videoIcon = document.getElementById('video-icon');
-
-function playPause() {
-    if(videoFile.paused) {
-        //play video
-        videoFile.play();
-
-        //change icon
-        videoIcon.classList.add('ri-pause-line');
-        videoIcon.classList.remove('ri-play-line');
-    }else{
-        //pause video
-        videoFile.pause();
-
-        //change icon
-        videoIcon.classList.remove('ri-pause-line');
-        videoIcon.classList.add('ri-play-line');
-    }
-}
-
-videoButton.addEventListener('click', playPause);
-
-function finalVideo() {
-    //video ends -> icon change
-    videoIcon.classList.remove('ri-pause-line');
-    videoIcon.classList.add('ri-play-line');
-}
-videoFile.addEventListener('ended', finalVideo);
-
-/*==================== SHOW SCROLL UP ====================*/ 
-function scrollUp() {
-    const scrollUp = document.getElementById('scroll-up');
-    if(this.scrollY >= 200) {
-        scrollUp.classList.add('show-scroll');
-    }else{
-        scrollUp.classList.remove('show-scroll');
-    }
-}
-
-window.addEventListener('scroll', scrollUp);
-
-/*==================== SCROLL SECTIONS ACTIVE LINK ====================*/
-const sections = document.querySelectorAll('section[id]');
-
-function scrollActive() {
-    const scrollY = window.pageYOffset;
-
-    sections.forEach(current => {
-        const sectionHeight = current.offsetHeight;
-        const sectionTop = current.offsetTop - 50;
-        const sectionId = current.getAttribute('id');
-
-        if(scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.add('active-link');
-        }else{
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.remove('active-link');
-        }
+    // Gentle paper-flight motion
+    gsap.to(".plane-wrap", {
+        y: -15,
+        rotation: -1,
+        duration: 3.2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
     });
-}
-window.addEventListener('scroll', scrollActive);
+    gsap.to(".balloon-a", {
+        y: -22,
+        x: 5,
+        rotation: 2,
+        duration: 4.2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+    });
+    gsap.to(".balloon-b", {
+        y: -14,
+        x: -4,
+        rotation: -3,
+        duration: 3.4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+    });
+    gsap.to(".sun", {
+        rotation: 8,
+        duration: 14,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+    });
+    gsap.to(".cloud-a", {
+        x: 22,
+        duration: 9,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+    });
+    gsap.to(".cloud-b", {
+        x: -20,
+        duration: 11,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+    });
+    gsap.to(".cloud-c", {
+        y: -9,
+        duration: 5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+    });
 
-/*==================== SCROLL REVEAL ANIMATION ====================*/
-const sr = ScrollReveal({
-    distance: '50px',
-    duration: 2800,
-    reset: true,
-});
+    gsap.utils.toArray(".destination").forEach((card, index) => {
+        gsap.from(card, {
+            y: 45,
+            opacity: 0,
+            duration: 0.8,
+            delay: index * 0.08,
+            scrollTrigger: { trigger: card, start: "top 88%" },
+        });
+    });
+    gsap.from(".section-head > *", {
+        y: 28,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        scrollTrigger: {
+            trigger: ".section-head",
+            start: "top 82%",
+        },
+    });
+    gsap.from(".closing > *", {
+        y: 24,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.12,
+        scrollTrigger: { trigger: ".closing", start: "top 80%" },
+    });
 
-sr.reveal(`.home__data, .home__social-link, .home__info, .discover__container, .experience__data, .experience__overlay, 
-.place__card, .sponsor__content, .footer__data, .footer__rights`, {
-    origin: 'top',
-    interval: 100,
-});
-sr.reveal(`.about__data, .video__description, .subscribe__description`, {
-    origin: 'left',
-});
-sr.reveal(`.about__img-overlay, .video__content, .subscribe__form`, {
-    origin: 'right',
-});
-
-/*==================== DARK LIGHT THEME ====================*/ 
-const themeButton = document.getElementById('theme-button');
-const darkTheme = 'dark-theme';
-const iconTheme = 'ri-sun-line';
-
-//selected topic if user selected
-const selectedTheme = localStorage.getItem('selected-theme');
-const selectedIcon = localStorage.getItem('selected-icon');
-
-//get current theme by validating dart theme class
-const getCurrentTheme = () => {
-    document.body.classList.contains(darkTheme) ? 'dark' : 'light';
-}
-const getCurrentIcon = () => {
-    themeButton.classList.contains(iconTheme) ? 'ri-moon-line' : 'ri-sun-line';
-}
-
-//validate if user previously choose a topic
-if(selectedTheme) {
-    document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme);
-    themeButton.classList[selectedIcon === 'ri-moon-line' ? 'add' : 'remove'](iconTheme);
-}
-
-//activate/deactivate theme with button
-themeButton.addEventListener('click', () => {
-    //add or remove dark / icon theme
-    document.body.classList.toggle(darkTheme);
-    themeButton.classList.toggle(iconTheme);
-
-    //save theme and icon that user choose
-    localStorage.setItem('selected-theme', getCurrentTheme());
-    localStorage.setItem('selected-icon', getCurrentIcon());
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // SplitText is loaded from the official GSAP CDN when available.
+    if (window.SplitText) {
+        const split = SplitText.create(".closing h2", {
+            type: "lines",
+            linesClass: "split-line",
+        });
+        gsap.from(split.lines, {
+            yPercent: 110,
+            opacity: 0,
+            stagger: 0.12,
+            duration: 0.8,
+            scrollTrigger: {
+                trigger: ".closing h2",
+                start: "top 85%",
+            },
+        });
+    }
+})();
