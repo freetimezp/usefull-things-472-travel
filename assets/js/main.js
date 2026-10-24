@@ -2,7 +2,12 @@
     const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
+
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+
     const loader = document.querySelector(".loader");
+    const loaderBefore = document.querySelector(".loader-before");
+
     const site = document.querySelector(".site");
     const progress = document.querySelector(".loader-progress");
     const count = document.querySelector(".loader-count span");
@@ -12,12 +17,15 @@
     // Mobile navigation
     menuButton.addEventListener("click", () => {
         const open = navLinks.classList.toggle("open");
+
         menuButton.setAttribute("aria-expanded", String(open));
         menuButton.querySelector("span").textContent = open ? "×" : "☰";
     });
+
     navLinks.querySelectorAll("a").forEach((link) =>
         link.addEventListener("click", () => {
             navLinks.classList.remove("open");
+
             menuButton.setAttribute("aria-expanded", "false");
             menuButton.querySelector("span").textContent = "☰";
         }),
@@ -31,12 +39,13 @@
         return;
     }
 
-    gsap.registerPlugin(ScrollTrigger);
     const loadState = { value: 0 };
+
     gsap.to(loadState, {
         value: 100,
         duration: 2.1,
         ease: "power2.inOut",
+
         onUpdate: () => {
             const n = Math.round(loadState.value);
             progress.style.width = n + "%";
@@ -51,13 +60,14 @@
                     ScrollTrigger.refresh();
                 },
             });
+
             intro
                 .to(".loader-inner", {
                     y: -18,
                     opacity: 0,
                     duration: 0.35,
                 })
-                .to(".loader::before", { yPercent: -120, duration: 0.01 }, 0)
+                .to(loaderBefore, { yPercent: -120, duration: 0.01 }, 0)
                 .to(
                     loader,
                     {
@@ -128,11 +138,7 @@
                     },
                     "-=1",
                 )
-                .from(
-                    ".mountains",
-                    { yPercent: 18, opacity: 0, duration: 1.1 },
-                    "-=1.1",
-                )
+
                 .from(
                     ".scroll-cue, .bottom-label",
                     {
@@ -201,49 +207,4 @@
         yoyo: true,
         ease: "sine.inOut",
     });
-
-    gsap.utils.toArray(".destination").forEach((card, index) => {
-        gsap.from(card, {
-            y: 45,
-            opacity: 0,
-            duration: 0.8,
-            delay: index * 0.08,
-            scrollTrigger: { trigger: card, start: "top 88%" },
-        });
-    });
-    gsap.from(".section-head > *", {
-        y: 28,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        scrollTrigger: {
-            trigger: ".section-head",
-            start: "top 82%",
-        },
-    });
-    gsap.from(".closing > *", {
-        y: 24,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.12,
-        scrollTrigger: { trigger: ".closing", start: "top 80%" },
-    });
-
-    // SplitText is loaded from the official GSAP CDN when available.
-    if (window.SplitText) {
-        const split = SplitText.create(".closing h2", {
-            type: "lines",
-            linesClass: "split-line",
-        });
-        gsap.from(split.lines, {
-            yPercent: 110,
-            opacity: 0,
-            stagger: 0.12,
-            duration: 0.8,
-            scrollTrigger: {
-                trigger: ".closing h2",
-                start: "top 85%",
-            },
-        });
-    }
 })();

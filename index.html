@@ -18,9 +18,8 @@
     </head>
 
     <body class="is-loading">
-        <div class="grain"></div>
-
         <div class="loader" aria-label="Loading Papertrip">
+            <div class="loader-before"></div>
             <div class="loader-inner">
                 <svg
                     class="loader-plane"
@@ -81,10 +80,10 @@
                     </button>
 
                     <nav class="nav-links">
-                        <a href="#home">Home</a>
-                        <a href="#about">About</a>
-                        <a href="#destinations">Destinations</a>
-                        <a href="#contact">Contact</a>
+                        <a href="#">Home</a>
+                        <a href="#">About</a>
+                        <a href="#">Destinations</a>
+                        <a href="#">Contact</a>
                     </nav>
                 </header>
 
@@ -108,7 +107,7 @@
                     </p>
 
                     <div class="hero-actions">
-                        <a class="cta" href="#destinations">
+                        <a class="cta" href="#">
                             Explore
                             <svg viewBox="0 0 24 24" fill="none">
                                 <path
@@ -157,35 +156,10 @@
                         />
                     </svg>
 
-                    <svg class="cloud cloud-a floaty" viewBox="0 0 300 180">
-                        <path
-                            d="M-10 155V99c0-30 25-54 55-54 7-30 32-49 62-43 26 5 42 26 
-                            42 51 12-12 26-17 43-15 26 3 44 24 44 48 29-5 58 17 58 47v22Z"
-                            fill="#fff8eb"
-                            stroke="#f4e9d8"
-                            stroke-width="3"
-                        />
-                    </svg>
-
-                    <svg class="cloud cloud-b floaty" viewBox="0 0 300 180">
-                        <path
-                            d="M-5 150c0-30 25-53 55-53 9-36 37-55 66-45 21 7 32 25 32 
-                            45 17-21 43-25 63-12 12 8 19 21 20 35 31-7 63 17 63 49v16H-5Z"
-                            fill="#fff9ee"
-                            stroke="#f3e8d7"
-                            stroke-width="3"
-                        />
-                    </svg>
-
-                    <svg class="cloud cloud-c floaty" viewBox="0 0 260 130">
-                        <path
-                            d="M4 109c-2-22 14-40 36-40 5-30 30-47 54-35 15 7 22 19 
-                            22 35 12-18 36-22 51-8 7 7 11 15 11 25 22-8 48 8 49 32H4Z"
-                            fill="#fff9ec"
-                            stroke="#f3e8d7"
-                            stroke-width="2"
-                        />
-                    </svg>
+                    <!-- CSS paper clouds -->
+                    <div class="cloud cloud-a floaty"></div>
+                    <div class="cloud cloud-b floaty"></div>
+                    <div class="cloud cloud-c floaty"></div>
 
                     <svg class="flight-path" viewBox="0 0 700 450">
                         <path
@@ -305,218 +279,12 @@
                     </svg>
                 </div>
 
-                <svg
-                    class="mountains"
-                    viewBox="0 0 1440 280"
-                    preserveAspectRatio="none"
-                    aria-hidden="true"
-                >
-                    <path
-                        d="M0 180 120 115 205 180 280 70 385 188 500 128 610 208 
-                        730 168 840 212 950 100 1060 190 1170 72 1290 185 1370 125 
-                        1440 165V280H0Z"
-                        fill="#e9f1db"
-                        opacity=".95"
-                    />
-                    <path
-                        d="M0 220 155 140 255 220 350 105 470 228 600 160 715 245 
-                        835 180 945 245 1060 130 1170 225 1285 115 1440 215V280H0Z"
-                        fill="#5ca8bf"
-                    />
-                    <path
-                        d="M350 105 319 148 350 139 374 164 389 151 470 228Z"
-                        fill="#fff8eb"
-                    />
-                    <path
-                        d="M1060 130 1026 174 1059 160 1081 181 1101 162 1170 225Z"
-                        fill="#fff8eb"
-                    />
-                    <path
-                        d="M1285 115 1251 158 1284 147 1308 171 1325 151 1440 
-                        215V280H0V258L155 220 255 255 350 225 470 260 600 235 715 
-                        265 835 230 945 260 1060 220 1170 258 1285 220 1440 250V280H0Z"
-                        fill="#277da0"
-                    />
-                    <path
-                        d="M0 252 180 225 340 265 510 235 660 267 830 235 1000 263 
-                        1150 230 1310 260 1440 235V280H0Z"
-                        fill="#fff7e7"
-                    />
-                </svg>
-
                 <div class="bottom-label">A little paper. A lot of world.</div>
 
                 <a class="scroll-cue" href="#about">
                     <span class="mouse"></span><span>Scroll to wander</span>
                 </a>
             </section>
-
-            <section class="section" id="about">
-                <div class="section-head">
-                    <div>
-                        <div class="section-kicker">
-                            01 — A different kind of getaway
-                        </div>
-                        <h2>Leave room for<br /><em>the unexpected.</em></h2>
-                    </div>
-
-                    <p class="section-intro">
-                        Some journeys begin with a ticket. The best ones begin
-                        with a little curiosity and a willingness to get
-                        wonderfully lost.
-                    </p>
-                </div>
-
-                <div class="destination-grid" id="destinations">
-                    <article class="destination">
-                        <svg
-                            class="destination-art"
-                            viewBox="0 0 400 340"
-                            preserveAspectRatio="xMidYMid slice"
-                            aria-hidden="true"
-                        >
-                            <circle cx="285" cy="80" r="45" fill="#ffc65e" />
-                            <path
-                                d="M0 240 80 125 155 222 220 115 330 240 400 180V340H0Z"
-                                fill="#7ebdbe"
-                            />
-                            <path
-                                d="M80 125 62 166 81 155 98 178 115 157 155 222 220 115 
-                                199 163 221 153 245 184 260 163 330 240Z"
-                                fill="#f9f0dd"
-                            />
-                            <path
-                                d="M0 265Q100 225 210 265T400 250V340H0Z"
-                                fill="#3f9eb6"
-                            />
-                            <path
-                                d="M0 300Q110 270 210 300T400 290V340H0Z"
-                                fill="#d8eee6"
-                            />
-                        </svg>
-
-                        <div class="destination-meta">
-                            <div>
-                                <div class="destination-number">
-                                    01 / COASTLINES
-                                </div>
-                                <h3>Somewhere blue</h3>
-                            </div>
-
-                            <span class="destination-arrow">↗</span>
-                        </div>
-                    </article>
-
-                    <article class="destination">
-                        <svg
-                            class="destination-art"
-                            viewBox="0 0 400 340"
-                            preserveAspectRatio="xMidYMid slice"
-                            aria-hidden="true"
-                        >
-                            <circle cx="300" cy="70" r="38" fill="#ffcc69" />
-
-                            <path
-                                d="M0 0H400V220L340 180 280 225 220 160 165 215 90 155 0 215Z"
-                                fill="#f8d9a7"
-                            />
-                            <path
-                                d="M0 250 70 180 140 250 215 145 300 240 360 190 400 220V340H0Z"
-                                fill="#d79b71"
-                            />
-                            <path
-                                d="M215 145 196 182 216 171 236 190 251 174 300 240Z"
-                                fill="#fff4df"
-                            />
-                            <path
-                                d="M0 280 100 240 190 280 280 230 400 270V340H0Z"
-                                fill="#b86f56"
-                            />
-                            <path
-                                d="M0 315Q100 280 200 315T400 300V340H0Z"
-                                fill="#f2d6ad"
-                            />
-                        </svg>
-
-                        <div class="destination-meta">
-                            <div>
-                                <div class="destination-number">
-                                    02 / OPEN ROADS
-                                </div>
-                                <h3>Into the wild</h3>
-                            </div>
-                            <span class="destination-arrow">↗</span>
-                        </div>
-                    </article>
-
-                    <article class="destination">
-                        <svg
-                            class="destination-art"
-                            viewBox="0 0 400 340"
-                            preserveAspectRatio="xMidYMid slice"
-                            aria-hidden="true"
-                        >
-                            <rect width="400" height="340" fill="#dcebd4" />
-                            <circle cx="300" cy="70" r="42" fill="#ffc65e" />
-                            <path
-                                d="M0 230 80 150 140 218 215 110 280 205 350 145 400 190V340H0Z"
-                                fill="#85bba0"
-                            />
-                            <path
-                                d="M215 110 195 151 215 141 235 163 250 145 280 205Z"
-                                fill="#fff7e8"
-                            />
-                            <path
-                                d="M0 260Q100 215 200 265T400 250V340H0Z"
-                                fill="#4c9889"
-                            />
-                            <path
-                                d="M70 340V245h28v95M100 340V225h28v115M130 340V258h26v82"
-                                fill="#d6e4bf"
-                            />
-                            <path d="M55 250 112 205 170 250Z" fill="#e6efda" />
-                        </svg>
-
-                        <div class="destination-meta">
-                            <div>
-                                <div class="destination-number">
-                                    03 / HIDDEN PLACES
-                                </div>
-                                <h3>Beyond the map</h3>
-                            </div>
-                            <span class="destination-arrow">↗</span>
-                        </div>
-                    </article>
-                </div>
-            </section>
-
-            <section class="closing" id="contact">
-                <p>Every great story goes somewhere</p>
-
-                <h2>
-                    Your next adventure is<br />
-                    <em>one fold away.</em>
-                </h2>
-
-                <a class="cta" href="#home">
-                    Take off
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path
-                            d="M4 12h15m-6-6 6 6-6 6"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                    </svg>
-                </a>
-            </section>
-
-            <footer>
-                <span>© 2026 Papertrip Studio</span>
-                <span>Made of wonder & paper</span>
-                <a href="#home">Back to the sky ↑</a>
-            </footer>
         </main>
 
         <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
