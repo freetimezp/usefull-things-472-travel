@@ -56,8 +56,11 @@
                 defaults: { ease: "power3.out" },
                 onComplete: () => {
                     document.body.classList.remove("is-loading");
+
                     loader.remove();
                     ScrollTrigger.refresh();
+
+                    startFloatingAnimations();
                 },
             });
 
@@ -152,59 +155,187 @@
         },
     });
 
-    // Gentle paper-flight motion
-    gsap.to(".plane-wrap", {
-        y: -15,
-        rotation: -1,
-        duration: 3.2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-    });
-    gsap.to(".balloon-a", {
-        y: -22,
-        x: 5,
-        rotation: 2,
-        duration: 4.2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-    });
-    gsap.to(".balloon-b", {
-        y: -14,
-        x: -4,
-        rotation: -3,
-        duration: 3.4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-    });
-    gsap.to(".sun", {
-        rotation: 8,
-        duration: 14,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-    });
-    gsap.to(".cloud-a", {
-        x: 22,
-        duration: 9,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-    });
-    gsap.to(".cloud-b", {
-        x: -20,
-        duration: 11,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-    });
-    gsap.to(".cloud-c", {
-        y: -9,
-        duration: 5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-    });
+    /* =========================================
+        GENTLE PAPER-FLIGHT MOTION
+        Smooth floating — no sudden jumps
+    ========================================= */
+
+    function startFloatingAnimations() {
+        // Airplane: slow, weightless gliding
+        gsap.to(".plane-float", {
+            y: "-=12",
+            x: "+=25",
+            rotation: "+=1",
+            duration: 4.5,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+
+        // Balloons: independent, gentle drifting
+        gsap.to(".balloon-a .balloon-float", {
+            y: "-=12",
+            x: "+=3",
+            rotation: "+=1",
+            duration: 5.5,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+
+        gsap.to(".balloon-b .balloon-float", {
+            y: "-=9",
+            x: "-=3",
+            rotation: "-=1",
+            duration: 4.8,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+
+        // Sun: almost imperceptible movement
+        gsap.to(".sun-wrap", {
+            rotation: "+=40",
+            duration: 18,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+
+        // Clouds: slow lateral drifting
+        gsap.to(".cloud-a", {
+            x: "+=60",
+            duration: 12,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+
+        gsap.to(".cloud-b", {
+            x: "-=85",
+            duration: 14,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+
+        gsap.to(".cloud-c", {
+            y: "-=15",
+            x: "+=10",
+            duration: 8,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+        });
+    }
+
+    /* =========================================
+        PAPER LANDSCAPE — GENTLE PARALLAX
+    ========================================= */
+
+    // Small mouse movement creates a miniature diorama effect.
+    // Each layer travels a different distance to suggest depth.
+
+    const hero = document.querySelector(".hero");
+
+    if (hero && !reducedMotion) {
+        const parallaxLayers = [
+            { selector: ".mountain-far", x: 5, y: 2 },
+            { selector: ".mountain-mid", x: 10, y: 4 },
+            { selector: ".paper-hills", x: 15, y: 5 },
+            { selector: ".tree-row-back", x: 20, y: 4 },
+            { selector: ".tree-row-front", x: 26, y: 6 },
+            { selector: ".grass-details", x: 12, y: 3 },
+        ];
+
+        const cleanups = [];
+
+        parallaxLayers.forEach(({ selector, x, y }) => {
+            const elements = hero.querySelectorAll(selector);
+
+            elements.forEach((element) => {
+                const moveX = gsap.quickTo(element, "x", {
+                    duration: 1.2,
+                    ease: "power3.out",
+                });
+
+                const moveY = gsap.quickTo(element, "y", {
+                    duration: 1.2,
+                    ease: "power3.out",
+                });
+
+                cleanups.push(() => {
+                    gsap.set(element, { x: 0, y: 0 });
+                });
+
+                element.dataset.parallaxX = String(x);
+                element.dataset.parallaxY = String(y);
+
+                element._paperMoveX = moveX;
+                element._paperMoveY = moveY;
+            });
+        });
+
+        const handlePointerMove = (event) => {
+            const bounds = hero.getBoundingClientRect();
+
+            const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+            const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+            parallaxLayers.forEach(({ selector }) => {
+                hero.querySelectorAll(selector).forEach((element) => {
+                    element._paperMoveX?.(
+                        -x * Number(element.dataset.parallaxX),
+                    );
+                    element._paperMoveY?.(
+                        -y * Number(element.dataset.parallaxY),
+                    );
+                });
+            });
+        };
+
+        const resetParallax = () => {
+            cleanups.forEach((cleanup) => cleanup());
+        };
+
+        // Mouse movement only: no extra work on touch devices.
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            hero.addEventListener("pointermove", handlePointerMove);
+            hero.addEventListener("pointerleave", resetParallax);
+        }
+
+        // Scroll parallax: very subtle vertical movement.
+        gsap.to(".mountain-far", {
+            y: 12,
+            ease: "none",
+            scrollTrigger: {
+                trigger: hero,
+                start: "top top",
+                end: "bottom top",
+                scrub: 1,
+            },
+        });
+
+        gsap.to(".mountain-mid", {
+            y: 24,
+            ease: "none",
+            scrollTrigger: {
+                trigger: hero,
+                start: "top top",
+                end: "bottom top",
+                scrub: 1,
+            },
+        });
+
+        gsap.to(".paper-hills", {
+            y: 34,
+            ease: "none",
+            scrollTrigger: {
+                trigger: hero,
+                start: "top top",
+                end: "bottom top",
+                scrub: 1,
+            },
+        });
+    }
 })();
